@@ -23,16 +23,7 @@ function PokemonInfo({ pokemonResource }) {
   );
 }
 
-const SUSPENSE_CONFIG = {
-  timeoutMs: 4000,
-
-  // Set this to the time of our CSS transition.
-  // This is the part that says “if the transition takes X amount of time”
-  busyDelayMs: 300,
-
-  // Set this to the total time you want the transition state to persist if we surpass the busyDelayMs time.
-  busyMinDurationMs: 700,
-};
+const SUSPENSE_CONFIG = { timeoutMs: 4000 };
 
 function createPokemonResource(pokemonName) {
   let delay = 1500;
@@ -66,7 +57,7 @@ function App() {
     <div className="pokemon-info-app">
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
-      <div className={`pokemon-info ${isPending ? "pokemon-loading" : ""}`}>
+      <div className="pokemon-info" style={{ opacity: isPending ? 0.6 : 1 }}>
         {pokemonResource ? (
           <PokemonErrorBoundary
             onReset={handleReset}

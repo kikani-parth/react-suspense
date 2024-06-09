@@ -23,16 +23,7 @@ function PokemonInfo({ pokemonResource }) {
   );
 }
 
-const SUSPENSE_CONFIG = {
-  timeoutMs: 4000,
-
-  // Set this to the time of our CSS transition.
-  // This is the part that says “if the transition takes X amount of time”
-  busyDelayMs: 300,
-
-  // Set this to the total time you want the transition state to persist if we surpass the busyDelayMs time.
-  busyMinDurationMs: 700,
-};
+const SUSPENSE_CONFIG = { timeoutMs: 4000 };
 
 function createPokemonResource(pokemonName) {
   let delay = 1500;
