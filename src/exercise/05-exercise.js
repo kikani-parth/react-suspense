@@ -6,14 +6,10 @@ import {
   fetchPokemon,
   PokemonInfoFallback,
   PokemonForm,
+  PokemonDataView,
   PokemonErrorBoundary,
-  getImageUrlForPokemon,
 } from "../pokemon";
 import { createResource } from "../utils";
-
-const PokemonInfo = React.lazy(() =>
-  import("../lazy/pokemon-info-render-as-you-fetch")
-);
 
 function preloadImage(src) {
   return new Promise((resolve) => {
@@ -21,6 +17,30 @@ function preloadImage(src) {
     img.src = src;
     img.onload = () => resolve(src);
   });
+}
+
+const imgSrcResourceCache = {};
+
+function Img({ src, alt, props }) {
+  let imgSrcResource = imgSrcResourceCache[src];
+
+  if (!imgSrcResource) {
+    imgSrcResource = createResource(preloadImage(src));
+    imgSrcResourceCache[src] = imgSrcResource;
+  }
+  return <img src={imgSrcResource.read()} alt={alt} {...props} />;
+}
+
+function PokemonInfo({ pokemonResource }) {
+  const pokemon = pokemonResource.read();
+  return (
+    <div>
+      <div className="pokemon-info__img-wrapper">
+        <Img src={pokemon.image} alt={pokemon.name} />
+      </div>
+      <PokemonDataView pokemon={pokemon} />
+    </div>
+  );
 }
 
 const SUSPENSE_CONFIG = {
@@ -42,11 +62,7 @@ function getPokemonResource(name) {
 }
 
 function createPokemonResource(pokemonName) {
-  const data = createResource(fetchPokemon(pokemonName));
-  const image = createResource(
-    preloadImage(getImageUrlForPokemon(pokemonName))
-  );
-  return { data, image };
+  return createResource(fetchPokemon(pokemonName));
 }
 
 function App() {
